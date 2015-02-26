@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>ControlExpenses</artifactId>
+        <groupId>Toptal</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>Toptal</groupId>
+    <artifactId>ControlExpenses.services</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>ControlExpenses.services</name>
+
+    <properties>
+        <control-expenses-commons.version>1.0-SNAPSHOT</control-expenses-commons.version>
+        <control-expenses-domain.version>1.0-SNAPSHOT</control-expenses-domain.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>Toptal</groupId>
+            <artifactId>ControlExpenses.commons</artifactId>
+            <version>${control-expenses-commons.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>Toptal</groupId>
+            <artifactId>ControlExpenses.domain</artifactId>
+            <version>${control-expenses-domain.version}</version>
+        </dependency>
+    </dependencies>
+
+</project>
