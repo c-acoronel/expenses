@@ -9,7 +9,7 @@ import javax.ws.rs.ext.Provider;
 import java.io.IOException;
 
 /**
- * Created by Andres on 16/11/2014.
+ * Created by Andres.
  */
 @Provider
 public class ResponseCorsFilter implements ContainerResponseFilter {
@@ -28,7 +28,8 @@ public class ResponseCorsFilter implements ContainerResponseFilter {
         responseContext.getHeaders().add("Access-Control-Allow-Origin", allowedOrigin);
         responseContext.getHeaders().add("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, OPTIONS, HEAD");
         responseContext.getHeaders().add("Access-Control-Allow-Credentials", "true");
-        responseContext.getHeaders().add("Access-Control-Allow-Headers", "Content-Type, Client-Id");
+        responseContext.getHeaders().add("Access-Control-Allow-Headers", "Accept,Accept-Encoding,Accept-Language,Access-Control-Request-Method,Access-Control-Request-Headers,Authorization,Connection,Content-Type,Host,Origin,Referer,Token-Id,User-Agent, X-Requested-With");
+//        responseContext.getHeaders().add("Access-Control-Allow-Headers", "Content-Type, Client-Id");
 //        Accept,Accept-Encoding,Accept-Language,Access-Control-Request-Method,Access-Control-Request-Headers,Authorization,Connection,Content-Type,Host,Origin,Referer,Token-Id,User-Agent, X-Requested-With
     }
 }

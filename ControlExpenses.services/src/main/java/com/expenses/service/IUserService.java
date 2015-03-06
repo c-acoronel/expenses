@@ -7,7 +7,7 @@ import com.expenses.domain.entities.User;
  */
 public interface IUserService {
 
-    public User getById(String userEmail);
+    public User getByUserName(String userName);
 
     public User login(String userId, String userPass);
 

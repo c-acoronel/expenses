@@ -35,7 +35,7 @@
         </init-param>
         <init-param>
             <param-name>javax.ws.rs.container.ContainerResponseFilter</param-name>
-            <param-value>com.expenses.filter.ResponseCorsFilter</param-value>
+            <param-value>com.expenses.filter.ApiOriginFilter</param-value>
         </init-param>
         <init-param>
             <param-name>javax.ws.rs.container.ContainerRequestFilters</param-name>

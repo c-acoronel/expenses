@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Created by Andres on 15/11/2014.
+ * Created by Andres.
  */
 public class ApiOriginFilter implements javax.servlet.Filter{
 

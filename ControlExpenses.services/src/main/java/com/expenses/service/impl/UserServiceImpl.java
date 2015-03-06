@@ -29,8 +29,8 @@ public class UserServiceImpl implements IUserService {
 
 
     @Override
-    public User getById(String userEmail){
-        return userDao.findById(userEmail, User.class);
+    public User getByUserName(String userEmail){
+        return userDao.getUserByUserName(User.class, userEmail);
     }
 
     @Override
