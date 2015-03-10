@@ -57,7 +57,7 @@ public class AuthFilter implements ContainerRequestFilter {
         //Get header values
         MultivaluedMap<String, String> headers = containerRequest.getHeaders();
         //This is to allow swagger interface to consume services without authentication
-        if(headers.get(REFER_HEADER).get(0).contains(LOCAL_HOST_URI)){
+        if(null != headers.get(REFER_HEADER) && headers.get(REFER_HEADER).get(0).contains(LOCAL_HOST_URI)){
             return;
         }
 

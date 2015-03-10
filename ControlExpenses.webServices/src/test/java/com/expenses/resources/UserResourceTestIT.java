@@ -1,14 +1,13 @@
 package com.expenses.resources;
 
 import com.jayway.restassured.RestAssured;
-import org.junit.Before;
 import org.testng.annotations.Test;
 
 import static com.jayway.restassured.RestAssured.basic;
 import static org.hamcrest.Matchers.equalTo;
 
 /**
- * Created by Andres on 24/11/2014.
+ * Created by Andres.
  */
 public class UserResourceTestIT {
 
@@ -17,21 +16,18 @@ public class UserResourceTestIT {
 
 
     // Login User Test = email: andres@mail.com, password: password.
-//    @Test
-//    public void loginUserTest() {
-//        RestAssured.baseURI = "http://localhost";
-//        RestAssured.port = 8081 ;
-//        RestAssured.basePath = "/expenses-server/rest/user";
-//        RestAssured.authentication = basic("andres@email.com", "password");
-//        RestAssured.given()
-//                .get("/v1.0.0/userEmail/" +
-//                        userEmail
-//                        + "/pass/" +
-//                        userPassword)
-//                .then()
+    @Test
+    public void loginUserTest() {
+        RestAssured.baseURI = "http://localhost";
+        RestAssured.port = 8081 ;
+        RestAssured.basePath = "/expenses-server/rest/login";
+//        RestAssured.authentication = preemptive().basic("andres@email.com", "password");
+        RestAssured.given().auth().preemptive().basic("andres@email.com", "password")
+                .post("/v1.0.0")
+                .then()
 //                .body("user.lastName", equalTo("Gomez Coronel"))
-//                .statusCode(200);
-//    }
+                .statusCode(200);
+    }
 
     //    @Test
 //    public void loginUserTest() {
