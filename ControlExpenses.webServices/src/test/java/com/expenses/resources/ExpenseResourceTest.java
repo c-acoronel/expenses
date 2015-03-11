@@ -23,7 +23,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 /**
- * Created by Andres on 17/11/2014.
+ * Created by Andres.
  */
 public class ExpenseResourceTest {
 

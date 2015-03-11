@@ -1,5 +1,6 @@
 package com.expenses.service.impl;
 
+import com.expenses.commons.Constants;
 import com.expenses.domain.dao.IExpenseDao;
 import com.expenses.domain.dao.IUserDao;
 import com.expenses.domain.entities.Expense;
@@ -19,26 +20,16 @@ import java.util.List;
 
 
 /**
- * Created by Andres on 04/11/2014.
+ * Created by Andres.
  */
 @Service("expensesService")
 public class ExpensesServiceImpl implements IExpensesService {
 
-    private static final String NOT_FOUND_RESPONSE_CODE = "404";
-//    private static final String INTERNAL_SERVER_RESPONSE_CODE = "400";
-
-//    @Autowired(required = true)
-//    @Qualifier("expenseDao")
     @Autowired
     private IExpenseDao expenseDao;
 
     @Autowired
     private IUserDao userDao;
-
-//    Setter used by Spring.
-//    public void setExpenseDao(IExpenseDao expenseDao) {
-//        this.expenseDao = expenseDao;
-//    }
 
 
     @Override
@@ -46,7 +37,7 @@ public class ExpensesServiceImpl implements IExpensesService {
         Expense exp = expenseDao.findById(Integer.valueOf(expenseId), Expense.class);
         if(null == exp){
             String message = String.format("Cannot find expenses with expenseId: %s.", expenseId);
-            throw new NotFoundServiceException(NOT_FOUND_RESPONSE_CODE, message);
+            throw new NotFoundServiceException(Constants.NOT_FOUND_RESPONSE_CODE, message);
         }
         return exp;
     }
@@ -56,7 +47,7 @@ public class ExpensesServiceImpl implements IExpensesService {
         List<Expense> expenseList = expenseDao.findExpensesByUserId(Integer.valueOf(userId));
         if(null == expenseList){
             String message = String.format("Cannot find expenses for userId: %s.", userId);
-            throw new NotFoundServiceException(NOT_FOUND_RESPONSE_CODE, message);
+            throw new NotFoundServiceException(Constants.NOT_FOUND_RESPONSE_CODE, message);
         }
         return expenseList;
     }
@@ -68,7 +59,7 @@ public class ExpensesServiceImpl implements IExpensesService {
         Expense newExpense = expenseDao.findById(expense.getId(), Expense.class);
         if(null == newExpense){
             String message = String.format("Cannot create new expenses.");
-            throw new NotFoundServiceException(NOT_FOUND_RESPONSE_CODE, message);
+            throw new NotFoundServiceException(Constants.NOT_FOUND_RESPONSE_CODE, message);
         }
         return newExpense;
     }
@@ -78,7 +69,7 @@ public class ExpensesServiceImpl implements IExpensesService {
         expense.setUser(userDao.findById(userId, User.class));
         if(null == expenseDao.findById(expense.getId(), Expense.class)){
             String message = String.format("Expense cannot be updated.");
-            throw new NotFoundServiceException(NOT_FOUND_RESPONSE_CODE, message);
+            throw new NotFoundServiceException(Constants.NOT_FOUND_RESPONSE_CODE, message);
         }
         expenseDao.update(expense);
         return expense;
@@ -89,7 +80,7 @@ public class ExpensesServiceImpl implements IExpensesService {
         Expense exp = expenseDao.findById(Integer.valueOf(expenseId), Expense.class);
         if(null == exp){
             String message = String.format("Cannot find expense with id %s.", expenseId);
-            throw new NotFoundServiceException(NOT_FOUND_RESPONSE_CODE, message);
+            throw new NotFoundServiceException(Constants.NOT_FOUND_RESPONSE_CODE, message);
         }
         expenseDao.delete(exp);
     }
@@ -104,7 +95,7 @@ public class ExpensesServiceImpl implements IExpensesService {
         List<Expense> expenseList = expenseDao.getExpensesByDateRange(Integer.valueOf(userId), firstDate.toDate(), lastDate.toDate());
         if(null == expenseList){
             String message = String.format("Cannot find expenses for userId: %s between these dates.", userId);
-            throw new NotFoundServiceException(NOT_FOUND_RESPONSE_CODE, message);
+            throw new NotFoundServiceException(Constants.NOT_FOUND_RESPONSE_CODE, message);
         }
 
         Report expenseReport = new Report();

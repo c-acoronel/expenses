@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
 import static org.testng.AssertJUnit.assertEquals;
 
 /**
- * Created by Andres on 20/11/2014.
+ * Created by Andres.
  */
 public class UserServiceImplTest {
 
@@ -28,62 +28,74 @@ public class UserServiceImplTest {
     @InjectMocks
     private IUserService userService = new UserServiceImpl();
 
+    private User mockUser;
+
     @BeforeMethod
     public void initMocks() {
+        mockUser = buildMockuser();
         MockitoAnnotations.initMocks(this);
     }
 
-//    @Test
-//    public void login_OkTest(){
-//        User fakeUser = new User();
-//        when(userDao.findUserByCredentials(eq(User.class), anyString(), anyString())).thenReturn(fakeUser);
-//        User response = userService.login("userName", "pass");
-//        assertEquals(response, fakeUser);
-//    }
-//
-//    @Test(expectedExceptions = NotFoundServiceException.class)
-//    public void login_404Test(){
-//        when(userDao.findUserByCredentials(eq(User.class), anyString(), anyString())).thenReturn(null);
-//        userService.login("userName", "Password");
-//    }
-//
-//    //Create User
-//
-//    @Test
-//    public void create_OkTest(){
-//        User fakeUser = new User();
-//        when(userDao.userExist(eq(User.class), anyString())).thenReturn(null);
-//        when(userDao.findById(anyInt(), eq(User.class))).thenReturn(fakeUser);
-//        User response = userService.create(new User());
-//        assertEquals(response, fakeUser);
-//    }
-//
-//    @Test(expectedExceptions = NotFoundServiceException.class)
-//    public void create_404Test(){
-//        when(userDao.findById(anyInt(), eq(User.class))).thenReturn(null);
-//        userService.create(new User());
-//    }
-//
-//    @Test(expectedExceptions = BadRequestServiceException.class)
-//    public void create_400Test(){
-//        User fakeUser = new User();
-//        when(userDao.userExist(eq(User.class), anyString())).thenReturn(fakeUser);
-//        userService.create(new User());
-//    }
-//
-//    //Update User
-//
-//    @Test
-//    public void update_OkTest(){
-//        User fakeUser = new User();
-//        when(userDao.findById(anyInt(), eq(User.class))).thenReturn(fakeUser);
-//        User response = userService.create(fakeUser);
-//        assertEquals(response, fakeUser);
-//    }
-//
-//    @Test(expectedExceptions = NotFoundServiceException.class)
-//    public void update_404Test(){
-//        when(userDao.findById(anyInt(), eq(User.class))).thenReturn(null);
-//        userService.update(new User());
-//    }
+    //Create User
+
+    @Test
+    public void create_OkTest(){
+        when(userDao.userExist(eq(User.class), anyString())).thenReturn(null);
+        when(userDao.findById(anyInt(), eq(User.class))).thenReturn(mockUser);
+        User response = userService.create(mockUser);
+        assertEquals(response, mockUser);
+    }
+
+    @Test(expectedExceptions = NotFoundServiceException.class)
+    public void create_404Test(){
+        when(userDao.findById(anyInt(), eq(User.class))).thenReturn(null);
+        userService.create(mockUser);
+    }
+
+    @Test(expectedExceptions = BadRequestServiceException.class)
+    public void create_400Test(){
+        when(userDao.userExist(eq(User.class), anyString())).thenReturn(mockUser);
+        userService.create(mockUser);
+    }
+
+    //Update User
+
+    @Test
+    public void update_OkTest(){
+        User fakeUser = new User();
+        when(userDao.findById(anyInt(), eq(User.class))).thenReturn(fakeUser);
+        User response = userService.update(fakeUser);
+        assertEquals(response, fakeUser);
+    }
+
+    @Test(expectedExceptions = NotFoundServiceException.class)
+    public void update_404Test(){
+        when(userDao.findById(anyInt(), eq(User.class))).thenReturn(null);
+        userService.update(new User());
+    }
+
+
+    @Test
+    public void delete_OkTest(){
+        when(userDao.findById(anyInt(), eq(User.class))).thenReturn(mockUser);
+        userService.delete("1");
+    }
+
+    @Test(expectedExceptions = NotFoundServiceException.class)
+    public void delete_404Test(){
+        when(userDao.findById(anyInt(), eq(User.class))).thenReturn(null);
+        userService.delete("1");
+    }
+
+
+    private User buildMockuser(){
+        User mockUser = new User();
+
+        mockUser.setName("name");
+        mockUser.setLastName("lastname");
+        mockUser.setPassword("password");
+        mockUser.setEmail("email@mail.com");
+
+        return mockUser;
+    }
 }

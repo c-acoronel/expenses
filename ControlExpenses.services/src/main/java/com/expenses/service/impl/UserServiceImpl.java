@@ -1,5 +1,6 @@
 package com.expenses.service.impl;
 
+import com.expenses.commons.Constants;
 import com.expenses.commons.PasswordHashHelper;
 import com.expenses.domain.dao.IUserDao;
 import com.expenses.domain.entities.User;
@@ -21,8 +22,6 @@ import java.security.spec.InvalidKeySpecException;
 public class UserServiceImpl implements IUserService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
-    private static final String BAD_REQUEST_RESPONSE_CODE = "400";
-    private static final String NOT_FOUND_RESPONSE_CODE = "404";
 
     @Autowired
     private IUserDao userDao;
@@ -30,13 +29,18 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public User getByUserName(String userEmail){
-        return userDao.getUserByUserName(User.class, userEmail);
+       try{
+           return userDao.getUserByUserName(User.class, userEmail);
+       }
+       catch(Exception ex){
+           LOGGER.error("User with userName = {} not found", userEmail);
+           String message = String.format("User name not found.");
+           throw new NotFoundServiceException(Constants.NOT_FOUND_RESPONSE_CODE, message);
+        }
     }
 
     @Override
     public User login(String userEmail, String userPass) throws NotFoundServiceException {
-        LOGGER.debug("User Service - Login Method.");
-
         boolean loggedIn = false;
         String hashedPassword = userDao.getPasswordByUserName(User.class, userEmail);
 
@@ -44,8 +48,10 @@ public class UserServiceImpl implements IUserService {
             try {
                 loggedIn = PasswordHashHelper.validatePassword(userPass, hashedPassword);
             } catch (NoSuchAlgorithmException e) {
+                LOGGER.error(e.getMessage());
                 e.printStackTrace();
             } catch (InvalidKeySpecException e) {
+                LOGGER.error(e.getMessage());
                 e.printStackTrace();
             }
         }
@@ -54,20 +60,19 @@ public class UserServiceImpl implements IUserService {
             return userDao.getUserByUserName(User.class, userEmail);
         }
 
-//        User user = userDao.findUserByCredentials(User.class, userEmail, userPass);
-//        if (null == user) {
-//            String message = String.format("Credentials are invalid");
-//            throw new NotFoundServiceException(NOT_FOUND_RESPONSE_CODE, message);
-//        }
-//        return user;
-
-//        return userDao.findUserByCredentials(User.class, userEmail, userPass);
         return null;
     }
 
     @Override
     public String getPasswordByUserName(String userName){
-        return userDao.getPasswordByUserName(User.class, userName);
+        try{
+            return userDao.getPasswordByUserName(User.class, userName);
+        }
+        catch(Exception ex){
+            LOGGER.error("Exception thrown while getting user password. Ex = {}", ex.getMessage());
+            String message = String.format("User name not found.");
+            throw new NotFoundServiceException(Constants.NOT_FOUND_RESPONSE_CODE, message);
+        }
     }
 
     @Override
@@ -75,7 +80,7 @@ public class UserServiceImpl implements IUserService {
         LOGGER.debug("User Service - Create Method. New user = {}", user.toString());
         if (null != userDao.userExist(User.class, user.getEmail())) {
             String message = String.format("Cannot create user. The provided email is already registered.");
-            throw new BadRequestServiceException(BAD_REQUEST_RESPONSE_CODE, message);
+            throw new BadRequestServiceException(Constants.BAD_REQUEST_RESPONSE_CODE, message);
         }
         try {
             user.setPassword(PasswordHashHelper.createHash(user.getPassword()));
@@ -88,7 +93,7 @@ public class UserServiceImpl implements IUserService {
         User savedUser = userDao.findById(user.getId(), User.class);
         if (null == savedUser) {
             String message = String.format("Cannot create new user.");
-            throw new NotFoundServiceException(NOT_FOUND_RESPONSE_CODE, message);
+            throw new NotFoundServiceException(Constants.NOT_FOUND_RESPONSE_CODE, message);
         }
         return savedUser;
     }
@@ -97,9 +102,19 @@ public class UserServiceImpl implements IUserService {
     public User update(User user) {
         if(null == userDao.findById(user.getId(), User.class)){
             String message = String.format("There is no user registered with email %s", user.getEmail());
-            throw new NotFoundServiceException(NOT_FOUND_RESPONSE_CODE, message);
+            throw new NotFoundServiceException(Constants.NOT_FOUND_RESPONSE_CODE, message);
         }
         userDao.update(user);
         return user;
+    }
+
+    @Override
+    public void delete(String userId) {
+        User user = userDao.findById(Integer.valueOf(userId), User.class);
+        if(null == user){
+            String message = String.format("There is no user registered with id %s to delete.", userId);
+            throw new NotFoundServiceException(Constants.NOT_FOUND_RESPONSE_CODE, message);
+        }
+        userDao.delete(user);
     }
 }

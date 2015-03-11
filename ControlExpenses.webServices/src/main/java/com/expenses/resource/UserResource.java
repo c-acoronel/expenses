@@ -23,7 +23,7 @@ import javax.ws.rs.core.Response;
  * Created by Andres.
  */
 @Component
-@Api(value = UserResource.PATH, description = "Expenses Resource")
+@Api(value = UserResource.PATH, description = "User Resource")
 @Path(UserResource.PATH)
 @Consumes({MediaType.APPLICATION_JSON})
 @Produces({MediaType.APPLICATION_JSON})
@@ -43,7 +43,7 @@ public class UserResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/v1.0.0/userEmail/{userEmail}/pass/{pass}")
-    @ApiOperation(value = "Login User Service")
+    @ApiOperation(value = "Login User")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 404, message = "Requested resource doesn't exist."),
@@ -71,7 +71,7 @@ public class UserResource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/v1.0.0/create")
-    @ApiOperation(value = "Create new User Service")
+    @ApiOperation(value = "Create new User")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "Bad request"),
@@ -99,7 +99,7 @@ public class UserResource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/v1.0.0/update")
-    @ApiOperation(value = "Update User Service")
+    @ApiOperation(value = "Update a User")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "Bad request"),
@@ -110,8 +110,37 @@ public class UserResource {
             PersistenceException, InternalServerErrorException {
         LOGGER.debug("User Resource - Update User Service. Request Parameter: User={}", user);
         try{
-            User updatedUser= userService.update(user);
+            User updatedUser = userService.update(user);
             return Response.ok().entity(updatedUser).build();
+        }catch(NotFoundServiceException e){
+            LOGGER.error(e.getMessage());
+            throw new NotFoundException(OptionalStatus.message(e.getMessage()).statusCode(e.getStatusCode()).build());
+        }catch(InternalServerException e){
+            LOGGER.error(e.getMessage());
+            throw new PersistenceException(OptionalStatus.message(e.getMessage()).statusCode(e.getStatusCode()).build());
+        }catch (Exception e){
+            LOGGER.error(e.getMessage());
+            throw new InternalServerErrorException(OptionalStatus.message(e.getMessage()).build());
+        }
+    }
+
+
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/v1.0.0/delete/userId/{userId}")
+    @ApiOperation(value = "Delete a User")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 404, message = "Requested resource doesn't exist."),
+            @ApiResponse(code = 500, message = "Internal Server Error.")})
+    public Response delete(@ApiParam(defaultValue = "1", value = "User id")
+                           @PathParam("userId") final String userId) throws NotFoundException,
+            PersistenceException, InternalServerErrorException {
+        LOGGER.debug("User Resource - Delete User Service. Request Parameter: userId={}", userId);
+        try{
+            userService.delete(userId);
+            return Response.ok().build();
         }catch(NotFoundServiceException e){
             LOGGER.error(e.getMessage());
             throw new NotFoundException(OptionalStatus.message(e.getMessage()).statusCode(e.getStatusCode()).build());

@@ -5,7 +5,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
 /**
- * Created by Andres on 21/02/2015.
+ * Created by Andres.
  */
 public interface IAuthenticationService {
 

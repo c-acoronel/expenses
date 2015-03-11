@@ -17,4 +17,6 @@ public interface IUserService {
 
     public User update(User user);
 
+    public void delete(String userId);
+
 }

@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 import static org.testng.AssertJUnit.assertEquals;
 
 /**
- * Created by Andres on 04/11/2014.
+ * Created by Andres.
  */
 public class ExpensesServiceImplTest {
     @Mock
