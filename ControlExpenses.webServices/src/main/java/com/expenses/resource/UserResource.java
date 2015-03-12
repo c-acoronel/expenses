@@ -134,6 +134,7 @@ public class UserResource {
             @ApiResponse(code = 400, message = "Bad request"),
             @ApiResponse(code = 404, message = "Requested resource doesn't exist."),
             @ApiResponse(code = 500, message = "Internal Server Error.")})
+    @Consumes(MediaType.TEXT_PLAIN)
     public Response delete(@ApiParam(defaultValue = "1", value = "User id")
                            @PathParam("userId") final String userId) throws NotFoundException,
             PersistenceException, InternalServerErrorException {

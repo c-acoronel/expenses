@@ -100,10 +100,14 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public User update(User user) {
-        if(null == userDao.findById(user.getId(), User.class)){
+        User oldUser = userDao.findById(user.getId(), User.class);
+        if(null == oldUser){
             String message = String.format("There is no user registered with email %s", user.getEmail());
             throw new NotFoundServiceException(Constants.NOT_FOUND_RESPONSE_CODE, message);
         }
+        //Set new and old properties to the user.
+        user.setEmail(oldUser.getEmail());
+        user.setPassword(oldUser.getPassword());
         userDao.update(user);
         return user;
     }

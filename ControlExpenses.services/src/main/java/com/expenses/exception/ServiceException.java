@@ -1,7 +1,7 @@
 package com.expenses.exception;
 
 /**
- * Created by Andres on 16/11/2014.
+ * Created by Andres.
  */
 public class ServiceException extends RuntimeException{
 

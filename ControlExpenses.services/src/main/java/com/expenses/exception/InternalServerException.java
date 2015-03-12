@@ -1,9 +1,7 @@
 package com.expenses.exception;
 
-import com.expenses.exception.ServiceException;
-
 /**
- * Created by Andres on 16/11/2014.
+ * Created by Andres.
  */
 public class InternalServerException extends ServiceException {
 

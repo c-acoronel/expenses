@@ -1,9 +1,7 @@
 package com.expenses.exception;
 
-import com.expenses.exception.ServiceException;
-
 /**
- * Created by Andres on 22/11/2014.
+ * Created by Andres.
  */
 public class BadRequestServiceException extends ServiceException {
 

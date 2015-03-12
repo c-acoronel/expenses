@@ -1,5 +1,6 @@
 package com.expenses.resources;
 
+import com.expenses.commons.Constants;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.path.json.JsonPath;
 import com.jayway.restassured.response.Response;
@@ -26,15 +27,15 @@ public class LoginResourceTestIT {
 
     @BeforeTest
     public void setupRestAssured() {
-        RestAssured.baseURI = "http://localhost";
-        RestAssured.port = 8081 ;
-        RestAssured.basePath = "/expenses-server/rest/";
+        RestAssured.baseURI = Constants.BASE_URI_TEST;
+        RestAssured.port = Constants.BASE_PORT_TEST;
+        RestAssured.basePath = Constants.BASE_PATH_TEST;
         LOGGER.info("RestAssured URL = {}:{}{}", RestAssured.baseURI, RestAssured.port, RestAssured.basePath);
     }
 
-    // Login User Test = email: andres@mail.com, password: password.
+
     @Test
-    public void loginUserOkTest() {
+    public void loginUserStatus200Test() {
         RestAssured.given()
                 .auth().preemptive().basic(USER_EMAIL, USER_PASS)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -44,30 +45,12 @@ public class LoginResourceTestIT {
     }
 
     @Test
-    public void loginUserFailTest() {
-        RestAssured.given().auth().preemptive().basic(USER_EMAIL, "notExistingPass")
-                .contentType(MediaType.APPLICATION_JSON)
-                .post("/login/v1.0.0")
-                .then()
-                .statusCode(401);
-    }
-
-    @Test
-    public void loginInvalidUserNameTest(){
-        RestAssured.given().auth().preemptive().basic("email", USER_PASS)
-                .contentType(MediaType.APPLICATION_JSON)
-                .post("/login/v1.0.0")
-                .then()
-                .statusCode(401);
-    }
-
-    @Test
-    public void loginGetUserTest(){
+    public void loginUserTest(){
         Response response = RestAssured.expect().statusCode(200).given()
                 .auth().preemptive().basic(USER_EMAIL, USER_PASS)
                 .contentType(MediaType.APPLICATION_JSON)
                 .when()
-                .post("/login/v1.0.0");
+                .post(PATH);
 
         String responseBody = response.getBody().asString();
 
@@ -75,5 +58,32 @@ public class LoginResourceTestIT {
         assertEquals(jsonPath.getInt("id"), 1);
         assertEquals(jsonPath.getString("name"), "Andrés");
         assertEquals(jsonPath.getString("lastName"), "Gomez Coronel");
+    }
+
+    @Test
+    public void loginUserNoAuthenticationInfoFailTest() {
+        RestAssured.given().auth().preemptive().basic("", "")
+                .contentType(MediaType.APPLICATION_JSON)
+                .post(PATH)
+                .then()
+                .statusCode(401);
+    }
+
+    @Test
+    public void loginUserIncorrectPasswordFailTest() {
+        RestAssured.given().auth().preemptive().basic(USER_EMAIL, "notExistingPass")
+                .contentType(MediaType.APPLICATION_JSON)
+                .post(PATH)
+                .then()
+                .statusCode(401);
+    }
+
+    @Test
+    public void loginUserInvalidUserNameTest(){
+        RestAssured.given().auth().preemptive().basic("email", USER_PASS)
+                .contentType(MediaType.APPLICATION_JSON)
+                .post(PATH)
+                .then()
+                .statusCode(401);
     }
 }
