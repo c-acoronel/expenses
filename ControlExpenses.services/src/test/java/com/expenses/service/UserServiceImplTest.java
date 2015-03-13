@@ -4,6 +4,7 @@ import com.expenses.domain.dao.IUserDao;
 import com.expenses.domain.entities.User;
 import com.expenses.exception.BadRequestServiceException;
 import com.expenses.exception.NotFoundServiceException;
+import com.expenses.exception.ServiceException;
 import com.expenses.service.impl.UserServiceImpl;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -32,12 +33,42 @@ public class UserServiceImplTest {
 
     @BeforeMethod
     public void initMocks() {
-        mockUser = buildMockuser();
+        mockUser = buildMockUser();
         MockitoAnnotations.initMocks(this);
     }
 
-    //Create User
 
+    //Get user by userNae tests
+    @Test
+    public void getByUserName_OkTest(){
+        when(userDao.getUserByUserName(eq(User.class), anyString())).thenReturn(mockUser);
+        User response = userService.getByUserName("name");
+        assertEquals(response.getName(), "name");
+        assertEquals(response.getLastName(), "lastname");
+        assertEquals(response.getPassword(), "password");
+    }
+
+    @Test(expectedExceptions = Exception.class)
+    public void getByUserName_FailRetrieveUserTest(){
+        when(userDao.getUserByUserName(eq(User.class), anyString())).thenThrow(Exception.class);
+        userService.getByUserName("name");
+    }
+
+    //Get Password by UserName tests
+    @Test
+    public void getPasswordByUserName_OkTest(){
+        when(userDao.getPasswordByUserName(eq(User.class), anyString())).thenReturn(mockUser.getPassword());
+        String userPassword = userService.getPasswordByUserName("name");
+        assertEquals(userPassword, mockUser.getPassword());
+    }
+
+    @Test(expectedExceptions = ServiceException.class)
+    public void getPasswordByUserName_NullPasswordTest(){
+        when(userDao.getPasswordByUserName(eq(User.class), anyString())).thenReturn(null);
+        userService.getPasswordByUserName("name");
+    }
+
+    //Create User tests
     @Test
     public void create_OkTest(){
         when(userDao.userExist(eq(User.class), anyString())).thenReturn(null);
@@ -47,19 +78,18 @@ public class UserServiceImplTest {
     }
 
     @Test(expectedExceptions = NotFoundServiceException.class)
-    public void create_404Test(){
+    public void create_UserNotFoundAfterSavedTest(){
         when(userDao.findById(anyInt(), eq(User.class))).thenReturn(null);
         userService.create(mockUser);
     }
 
     @Test(expectedExceptions = BadRequestServiceException.class)
-    public void create_400Test(){
+    public void create_UserAlreadyExistTest(){
         when(userDao.userExist(eq(User.class), anyString())).thenReturn(mockUser);
         userService.create(mockUser);
     }
 
-    //Update User
-
+    //Update User tests
     @Test
     public void update_OkTest(){
         User fakeUser = new User();
@@ -74,7 +104,7 @@ public class UserServiceImplTest {
         userService.update(new User());
     }
 
-
+    //Delete user tests
     @Test
     public void delete_OkTest(){
         when(userDao.findById(anyInt(), eq(User.class))).thenReturn(mockUser);
@@ -88,7 +118,8 @@ public class UserServiceImplTest {
     }
 
 
-    private User buildMockuser(){
+    // Private methods
+    private User buildMockUser(){
         User mockUser = new User();
 
         mockUser.setName("name");

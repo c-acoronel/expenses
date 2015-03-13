@@ -40,34 +40,6 @@ public class UserResource {
     @Autowired
     private IUserService userService;
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/v1.0.0/userEmail/{userEmail}/pass/{pass}")
-    @ApiOperation(value = "Login User")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 404, message = "Requested resource doesn't exist."),
-            @ApiResponse(code = 500, message = "Internal Server Error.")})
-    public Response userLogin(
-            @ApiParam(defaultValue = "andres@email.com", value = "User email")
-            @PathParam("userEmail") final String userEmail,
-            @ApiParam(defaultValue = "password", value = "User password")
-            @PathParam("pass") final String userPass) throws NotFoundException,
-            PersistenceException, InternalServerErrorException{
-        LOGGER.debug("User Resource - Login Service. Parameters: userEmail = {}.", userEmail);
-        try{
-            User loggedUser = userService.login(userEmail, userPass);
-            return Response.ok().entity(loggedUser).build();
-        }catch(NotFoundServiceException e){
-            throw new NotFoundException(OptionalStatus.message(e.getMessage()).statusCode(e.getStatusCode()).build());
-        }catch(InternalServerException e){
-            throw new PersistenceException(OptionalStatus.message(e.getMessage()).statusCode(e.getStatusCode()).build());
-        }catch (Exception e){
-            throw new InternalServerErrorException(OptionalStatus.message(e.getMessage()).build());
-        }
-    }
-
-
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/v1.0.0/create")
@@ -115,9 +87,6 @@ public class UserResource {
         }catch(NotFoundServiceException e){
             LOGGER.error(e.getMessage());
             throw new NotFoundException(OptionalStatus.message(e.getMessage()).statusCode(e.getStatusCode()).build());
-        }catch(InternalServerException e){
-            LOGGER.error(e.getMessage());
-            throw new PersistenceException(OptionalStatus.message(e.getMessage()).statusCode(e.getStatusCode()).build());
         }catch (Exception e){
             LOGGER.error(e.getMessage());
             throw new InternalServerErrorException(OptionalStatus.message(e.getMessage()).build());
@@ -145,9 +114,6 @@ public class UserResource {
         }catch(NotFoundServiceException e){
             LOGGER.error(e.getMessage());
             throw new NotFoundException(OptionalStatus.message(e.getMessage()).statusCode(e.getStatusCode()).build());
-        }catch(InternalServerException e){
-            LOGGER.error(e.getMessage());
-            throw new PersistenceException(OptionalStatus.message(e.getMessage()).statusCode(e.getStatusCode()).build());
         }catch (Exception e){
             LOGGER.error(e.getMessage());
             throw new InternalServerErrorException(OptionalStatus.message(e.getMessage()).build());

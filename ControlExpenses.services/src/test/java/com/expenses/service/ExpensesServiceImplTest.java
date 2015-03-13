@@ -3,6 +3,7 @@ package com.expenses.service;
 import com.expenses.domain.dao.IExpenseDao;
 import com.expenses.domain.dao.IUserDao;
 import com.expenses.domain.entities.Expense;
+import com.expenses.domain.entities.Report;
 import com.expenses.exception.NotFoundServiceException;
 import com.expenses.service.impl.ExpensesServiceImpl;
 import org.mockito.InjectMocks;
@@ -46,7 +47,7 @@ public class ExpensesServiceImplTest {
     }
 
     @Test(expectedExceptions = NotFoundServiceException.class)
-    public void getById_404Test() {
+    public void getById_NotExistingExpenseTest() {
         when(expenseDao.findById(anyInt(), eq(Expense.class))).thenReturn(null);
         expensesService.getById("1");
     }
@@ -60,7 +61,7 @@ public class ExpensesServiceImplTest {
     }
 
     @Test(expectedExceptions = NotFoundServiceException.class)
-    public void getExpensesByUserId_404Test(){
+    public void getExpensesByUserId_NotExistingExpensesTest(){
         when(expenseDao.findExpensesByUserId(anyInt())).thenReturn(null);
         expensesService.getExpensesByUserId("1");
     }
@@ -88,7 +89,7 @@ public class ExpensesServiceImplTest {
     }
 
     @Test(expectedExceptions = NotFoundServiceException.class)
-    public void update_404Test(){
+    public void update_NotExistingExpenseTest(){
         when(expenseDao.findById(anyInt(), eq(Expense.class))).thenReturn(null);
         expensesService.update(1, new Expense());
     }
@@ -101,23 +102,21 @@ public class ExpensesServiceImplTest {
     }
 
     @Test(expectedExceptions = NotFoundServiceException.class)
-    public void delete_404Test(){
+    public void delete_NotExistingExpenseTest(){
         when(expenseDao.findById(anyInt(), eq(Expense.class))).thenReturn(null);
         expensesService.delete("1");
     }
 
-//    @Test
-//    public void getExpensesByDateRange_OkTest(){
-//        List<Expense> fakeExpenseList = new ArrayList<Expense>();
-//        Report fakeReport = new Report();
-//        when(expenseDao.getExpensesByDateRange(anyInt(), any(Date.class), any(Date.class))).thenReturn(fakeExpenseList);
-//        //when(buildReport(fakeExpenseList)).thenReturn(fakeReport);
-//        Report response = expensesService.getExpensesByDateRange("1", "2014-11-10 15:05:00", "2014-11-20 15:05:00");
-//        assertEquals(response, fakeReport);
-//    }
+    @Test
+    public void getExpensesByDateRange_OkTest(){
+        List<Expense> fakeExpenseList = new ArrayList<Expense>();
+        when(expenseDao.getExpensesByDateRange(anyInt(), any(Date.class), any(Date.class))).thenReturn(fakeExpenseList);
+        Report response = expensesService.getExpensesByDateRange("1", "2015-05-10 15:05:00", "2015-05-20 15:05:00");
+        assertEquals(response.getExpenses().size(), fakeExpenseList.size());
+    }
 
     @Test(expectedExceptions = NotFoundServiceException.class)
-    public void getExpensesByDateRange_404Test(){
+    public void getExpensesByDateRange_NoExpensesBetweenSelectedDatesTest(){
         when(expenseDao.getExpensesByDateRange(anyInt(), any(Date.class), any(Date.class))).thenReturn(null);
         expensesService.getExpensesByDateRange("1", "2014-11-10 15:05:00", "2014-11-20 15:05:00");
     }

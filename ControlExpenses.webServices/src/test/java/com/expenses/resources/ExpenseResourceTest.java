@@ -16,6 +16,9 @@ import org.testng.annotations.Test;
 
 import javax.ws.rs.core.Response;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
@@ -41,7 +44,53 @@ public class ExpenseResourceTest {
         MockitoAnnotations.initMocks(this);
     }
 
-    //Create Expense tests
+
+    //Get Expense by Id tests
+    @Test
+    public void getExpenseById_200Test() throws AbstractRESTException {
+        Expense expense = new Expense();
+
+        when(expensesService.getById(anyString())).thenReturn(expense);
+        final Response response = expensesResource.getExpensesById("1");
+        assertThat(response.getEntity()).isEqualTo(expense);
+    }
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void getExpenseById_404Test() throws AbstractRESTException {
+        when(expensesService.getById(anyString())).thenThrow(NotFoundServiceException.class);
+        expensesResource.getExpensesById("1");
+    }
+
+    @Test(expectedExceptions = InternalServerErrorException.class)
+    public void getExpenseById_500Test() throws AbstractRESTException {
+        when(expensesService.getById(anyString())).thenThrow(Exception.class);
+        expensesResource.getExpensesById("1");
+    }
+
+    //Get Expense by userId tests
+    @Test
+    public void getExpenseByUserId_200Test() throws AbstractRESTException {
+        List<Expense> expenseList = new ArrayList<Expense>();
+
+        when(expensesService.getExpensesByUserId(anyString())).thenReturn(expenseList);
+        final Response response = expensesResource.getExpensesByUserId("1");
+        assertThat(response.getStatus()).isEqualTo(200);
+        assertThat(response.getEntity()).isEqualTo(expenseList);
+    }
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void getExpenseByUserId_404Test() throws AbstractRESTException {
+        when(expensesService.getExpensesByUserId(anyString())).thenThrow(NotFoundServiceException.class);
+        expensesResource.getExpensesByUserId("1");
+    }
+
+    @Test(expectedExceptions = InternalServerErrorException.class)
+    public void getExpenseByUserId_500Test() throws AbstractRESTException {
+        when(expensesService.getExpensesByUserId(anyString())).thenThrow(Exception.class);
+        expensesResource.getExpensesByUserId("1");
+    }
+
+        //Create Expense tests
     @Test
     public void createExpense_200Test() throws AbstractRESTException {
         Expense newExpense = new Expense();
@@ -64,7 +113,6 @@ public class ExpenseResourceTest {
     }
 
     //Update Expense tests
-
     @Test
     public void updateExpense_200Test() throws AbstractRESTException {
         Expense updatedExpense = new Expense();
@@ -86,31 +134,7 @@ public class ExpenseResourceTest {
         expensesResource.update("1", mockExpense);
     }
 
-    //Get Expense by Id tests
-
-    @Test
-    public void getExpenseById_200Test() throws AbstractRESTException {
-        Expense expense = new Expense();
-
-        when(expensesService.getById(anyString())).thenReturn(expense);
-        final Response response = expensesResource.getExpensesById("1");
-        assertThat(response.getEntity()).isEqualTo(expense);
-    }
-
-    @Test(expectedExceptions = NotFoundException.class)
-    public void getExpenseById_404Test() throws AbstractRESTException {
-        when(expensesService.getById(anyString())).thenThrow(NotFoundServiceException.class);
-        expensesResource.getExpensesById("1");
-    }
-
-    @Test(expectedExceptions = InternalServerErrorException.class)
-    public void getExpenseById_500Test() throws AbstractRESTException {
-        when(expensesService.getById(anyString())).thenThrow(Exception.class);
-        expensesResource.getExpensesById("1");
-    }
-
     //Delete Expense
-
     @Test
     public void delete_200Test() throws AbstractRESTException {
         final Response response = expensesResource.delete("1", "1");
@@ -131,7 +155,6 @@ public class ExpenseResourceTest {
     }
 
     //Get Expense by date Range
-
     @Test
     public void getExpensesByDateRange_200Test() throws AbstractRESTException {
         Report fakeReport = new Report();

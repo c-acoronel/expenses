@@ -98,6 +98,11 @@ public class ExpensesServiceImpl implements IExpensesService {
             throw new NotFoundServiceException(Constants.NOT_FOUND_RESPONSE_CODE, message);
         }
 
+        return buildReport(expenseList, difference);
+    }
+
+    private Report buildReport(List<Expense> expenseList, int difference){
+
         Report expenseReport = new Report();
         Double totalAmount = 0.0;
 
@@ -111,20 +116,4 @@ public class ExpensesServiceImpl implements IExpensesService {
 
         return expenseReport;
     }
-
-//    private Report buildReport(List<Expense> expenseList){
-//
-//        Report expenseReport = new Report();
-//        Double totalAmount = 0.0;
-//
-//        for(Expense exp : expenseList){
-//            totalAmount += exp.getAmount();
-//        }
-//
-//        expenseReport.setTotalAmount(totalAmount);
-//        expenseReport.setDailyAverage(totalAmount/7);
-//        expenseReport.setExpenses(expenseList);
-//
-//        return expenseReport;
-//    }
 }

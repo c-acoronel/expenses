@@ -9,8 +9,6 @@ public interface IUserService {
 
     public User getByUserName(String userName);
 
-    public User login(String userId, String userPass);
-
     public String getPasswordByUserName(String userName);
 
     public User create(User user);

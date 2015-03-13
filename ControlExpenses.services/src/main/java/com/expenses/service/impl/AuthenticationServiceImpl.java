@@ -1,14 +1,8 @@
 package com.expenses.service.impl;
 
-import com.expenses.commons.Constants;
 import com.expenses.commons.PasswordHashHelper;
-import com.expenses.domain.dao.IUserDao;
-import com.expenses.domain.entities.User;
-import com.expenses.exception.NotFoundServiceException;
 import com.expenses.service.IAuthenticationService;
 import com.expenses.service.IUserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,14 +15,8 @@ import java.security.spec.InvalidKeySpecException;
 @Service("authenticationService")
 public class AuthenticationServiceImpl implements IAuthenticationService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationServiceImpl.class);
-
-
     @Autowired
     private IUserService userService;
-
-    @Autowired
-    private IUserDao userDao;
 
 
     @Override
@@ -38,19 +26,5 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
 
         return PasswordHashHelper.validatePassword(userPass, hashedPassword);
     }
-
-
-    public String getPasswordByUserName(String userName){
-        try{
-            return userDao.getPasswordByUserName(User.class, userName);
-        }
-        catch(Exception ex){
-            LOGGER.error("Exception thrown while getting user password. Ex = {}", ex.getMessage());
-            String message = String.format("User name not found.");
-            throw new NotFoundServiceException(Constants.NOT_FOUND_RESPONSE_CODE, message);
-        }
-
-    }
-
 
 }

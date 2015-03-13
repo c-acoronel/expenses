@@ -6,6 +6,7 @@ import com.expenses.domain.dao.IUserDao;
 import com.expenses.domain.entities.User;
 import com.expenses.exception.BadRequestServiceException;
 import com.expenses.exception.NotFoundServiceException;
+import com.expenses.exception.ServiceException;
 import com.expenses.service.IUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,41 +40,18 @@ public class UserServiceImpl implements IUserService {
         }
     }
 
-    @Override
-    public User login(String userEmail, String userPass) throws NotFoundServiceException {
-        boolean loggedIn = false;
-        String hashedPassword = userDao.getPasswordByUserName(User.class, userEmail);
-
-        if(null != hashedPassword){
-            try {
-                loggedIn = PasswordHashHelper.validatePassword(userPass, hashedPassword);
-            } catch (NoSuchAlgorithmException e) {
-                LOGGER.error(e.getMessage());
-                e.printStackTrace();
-            } catch (InvalidKeySpecException e) {
-                LOGGER.error(e.getMessage());
-                e.printStackTrace();
-            }
-        }
-
-        if(loggedIn){
-            return userDao.getUserByUserName(User.class, userEmail);
-        }
-
-        return null;
-    }
 
     @Override
     public String getPasswordByUserName(String userName){
-        try{
-            return userDao.getPasswordByUserName(User.class, userName);
+        String hashedPassword = userDao.getPasswordByUserName(User.class, userName);
+
+        if(null != hashedPassword){
+                return hashedPassword;
+            }
+            else{
+                throw new ServiceException("User password is null.");
+            }
         }
-        catch(Exception ex){
-            LOGGER.error("Exception thrown while getting user password. Ex = {}", ex.getMessage());
-            String message = String.format("User name not found.");
-            throw new NotFoundServiceException(Constants.NOT_FOUND_RESPONSE_CODE, message);
-        }
-    }
 
     @Override
     public User create(User user) {
