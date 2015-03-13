@@ -22,8 +22,6 @@ public class UserResourceTestIT {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserResourceTestIT.class);
 
     private static final String PATH = "user/v1.0.0/";
-    private static final String USER_EMAIL = "andres@email.com";
-    private static final String USER_PASS = "password";
     private static final String DEFAULT_NEW_USER = "{\r\n" +
             "\"email\":\"newUser@mail.com\",\r\n" +
             "\"password\":\"anyPassword\",\r\n" +
@@ -41,7 +39,7 @@ public class UserResourceTestIT {
         LOGGER.info("RestAssured URL = {}:{}{}", RestAssured.baseURI, RestAssured.port, RestAssured.basePath);
 
         Response response = RestAssured.expect().statusCode(200).given()
-                .auth().preemptive().basic(USER_EMAIL, USER_PASS)
+                .auth().preemptive().basic(Constants.DEFAULT_USER_NAME_TEST, Constants.DEFAULT_PASSWORD_TEST)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(DEFAULT_NEW_USER)
                 .when()
@@ -69,7 +67,7 @@ public class UserResourceTestIT {
     public void createUserSameEmailFailTest() {
         String methodPath = PATH + "create";
 
-        RestAssured.given().auth().preemptive().basic(USER_EMAIL, USER_PASS)
+        RestAssured.given().auth().preemptive().basic(Constants.DEFAULT_USER_NAME_TEST, Constants.DEFAULT_PASSWORD_TEST)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(DEFAULT_NEW_USER)
                 .post(methodPath)
@@ -86,7 +84,7 @@ public class UserResourceTestIT {
                 "\"lastName\":\"Smith\"\r\n}";
 
         Response response = RestAssured.expect().statusCode(200).given()
-                .auth().preemptive().basic(USER_EMAIL, USER_PASS)
+                .auth().preemptive().basic(Constants.DEFAULT_USER_NAME_TEST, Constants.DEFAULT_PASSWORD_TEST)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(UPDATE_USER)
                 .when()
@@ -108,7 +106,7 @@ public class UserResourceTestIT {
                 "\"name\":\"John\", \r\n" +
                 "\"lastName\":\"Smith\"\r\n}";
 
-        RestAssured.given().auth().preemptive().basic(USER_EMAIL, USER_PASS)
+        RestAssured.given().auth().preemptive().basic(Constants.DEFAULT_USER_NAME_TEST, Constants.DEFAULT_PASSWORD_TEST)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(UPDATE_USER)
                 .post(methodPath)
@@ -119,7 +117,7 @@ public class UserResourceTestIT {
     public void deleteUserTest() {
         String methodPath = PATH + "delete/userId/"+ newUserId;
 
-        RestAssured.given().auth().preemptive().basic(USER_EMAIL, USER_PASS)
+        RestAssured.given().auth().preemptive().basic(Constants.DEFAULT_USER_NAME_TEST, Constants.DEFAULT_PASSWORD_TEST)
                 .contentType((MediaType.APPLICATION_JSON))
                 .delete(methodPath)
                 .then()
